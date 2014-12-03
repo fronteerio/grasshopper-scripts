@@ -38,7 +38,7 @@ var output = [];
 
 // Create the parser
 var parser = parse({
-    'columns': ['TriposId', 'TriposName', 'PartId', 'PartName', 'SubPartId', 'SubPartName', 'ModuleId', 'ModuleName', 'SeriesId', 'SeriesName', 'EventId', 'EventTitle', 'EventType', 'EventStartDateTime', 'EventEndDateTime']
+    'columns': ['TriposId', 'TriposName', 'PartId', 'PartName', 'SubPartId', 'SubPartName', 'ModuleId', 'ModuleName', 'SerieId', 'SerieName', 'EventId', 'EventTitle', 'EventType', 'EventStartDateTime', 'EventEndDateTime']
 });
 
 // Use the writable stream api
@@ -131,10 +131,30 @@ var generateTree = function(output) {
             partId = part.id;
         }
 
+        // Module
         node.nodes[partId].nodes[item.ModuleId] = node.nodes[partId].nodes[item.ModuleId] || {
             'id': item.ModuleId,
             'name': item.ModuleName,
-            'type': 'module'
+            'type': 'module',
+            'nodes': {}
+        };
+
+        // Serie
+        node.nodes[partId].nodes[item.ModuleId].nodes[item.SerieId] = node.nodes[partId].nodes[item.ModuleId].nodes[item.SerieId] || {
+            'id': item.SerieId,
+            'name': item.SerieName,
+            'type': 'serie',
+            'nodes': {}
+        };
+
+        // Event
+        node.nodes[partId].nodes[item.ModuleId].nodes[item.SerieId].nodes[item.EventId] = node.nodes[partId].nodes[item.ModuleId].nodes[item.SerieId].nodes[item.EventId] || {
+            'id': item.EventId,
+            'name': item.EventTitle,
+            'type': 'event',
+            'event-type': item.EventType,
+            'start': item.EventStartDateTime,
+            'end': item.EventEndDateTime
         };
 
         prevCourse = item.TriposId;
